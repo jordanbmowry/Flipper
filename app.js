@@ -32,35 +32,51 @@ app.get('/', (req, res) => res.render('index'));
 app.post('/', (req, res) => {
 	const { username, password } = req.body;
 
+	const saveSessionAndRenderDashboard = (userid) => {
+		req.session.userid = userid;
+		req.session.save();
+		res.render('dashboard');
+	};
+
 	if (!username || !password) {
 		res.render('error', {
 			message: 'Please set both username and password',
 		});
 		return;
 	}
+
 	console.log(req.body, username, password);
+
 	client.hget('users', username, (err, userid) => {
 		if (!userid) {
 			//user does not exist, signup procedure
 			client.incr('userid', async (err, userid) => {
 				client.hset('users', username, userid);
+
 				const saltRounds = 10;
 				const hash = await bcrypt.hash(password, saltRounds);
+
 				client.hset(`user:${userid}`, 'hash', hash, 'username', username);
+
+				saveSessionAndRenderDashboard(userid);
 			});
 		} else {
 			//user exists, login procedure
 			client.hget(`user:${userid}`, 'hash', async (err, hash) => {
 				const result = await bcrypt.compare(password, hash);
 				if (result) {
-					//password ok
+					//password OK
+					saveSessionAndRenderDashboard(userid);
 				} else {
-					//wrong password
+					//incorrect password
+					res.render('error', {
+						message: 'Incorrect password',
+					});
+					return;
 				}
 			});
 		}
 	});
-	res.end();
 });
 
 app.listen(3000, () => {
