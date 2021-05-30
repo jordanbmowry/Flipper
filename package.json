@@ -1,0 +1,27 @@
+{
+  "name": "flipper",
+  "version": "1.0.0",
+  "description": "Twitter clone using node.js, express, and redis.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jordanbmowry/Flipper.git"
+  },
+  "author": "Jordan Mowry",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jordanbmowry/Flipper/issues"
+  },
+  "homepage": "https://github.com/jordanbmowry/Flipper#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "connect-redis": "^5.2.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.2",
+    "pug": "^3.0.2",
+    "redis": "^3.1.2"
+  }
+}
